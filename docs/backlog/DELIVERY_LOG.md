@@ -76,9 +76,10 @@ Version: 0.3.0, build 7
 ---
 
 User testing result:
-- EA-P1-015: PDF generation and sharing confirmed working 2026-05-08. Content review and re-generate pending.
-- EA-P1-016: Not yet tested
-- EA-P1-017: Not yet tested
+- EA-P1-015: ✅ PDF generation and sharing confirmed 2026-05-08.
+- EA-P1-016: ✅ Admin PIN gate confirmed. ✅ Storage usage section visible. **Bug found + fixed:** Photos showed 0 — storage walk was scanning `zone_photos/` but photos are stored under `ecoaudit/zones/`. Fixed to scan `ecoaudit/` directory. Also deactivate/reactivate user, developer tools hidden for inspector — all confirmed.
+- EA-P1-017: ✅ Developer tools hidden from inspector confirmed 2026-05-08.
+- **Bug fix (same build):** HVAC Packaged/Split toggle now uses `LayoutAnimation.easeInEaseOut` so the indoor unit section slides in/out visibly when the type changes.
 
 ---
 
@@ -201,8 +202,14 @@ Version: 0.2.0, build 6
 ---
 
 User testing result:
-- **Confirmed 2026-05-08:** Equipment add and delete confirmed for all 3 types. Audit Review screen accessible and working.
-- Pending: Form validation on empty required fields, HVAC Split/Packaged indoor section toggle, equipment data persistence across force-close, phase 2 rows locked.
+- ✅ Equipment add, edit, delete confirmed (all 3 types) 2026-05-08.
+- ✅ Form validation confirmed (save blocked on empty required fields).
+- ✅ Equipment edit confirmed.
+- ✅ App restart persistence confirmed.
+- ✅ Offline mode confirmed.
+- ✅ Mark as Completed confirmed (status changes, button hides).
+- HVAC Split/Packaged indoor unit section: visible but no animation — fixed (LayoutAnimation added, see EA-P1-015/016/017 entry).
+- Pending: Phase 2 rows locked (minor, cosmetic).
 
 ---
 
@@ -383,8 +390,11 @@ npm run build:apk
 ---
 
 User testing result:
-- **Confirmed 2026-05-08:** Zone delete confirmed. Photo capture (camera + library), photo delete confirmed. App navigation through audit → zones → workspace working.
-- Pending: Audit create validation, Mark as Completed flow, photo persistence across force-close, airplane mode operation.
+- ✅ Zone delete confirmed 2026-05-08.
+- ✅ Photo capture (camera + library) and photo delete confirmed.
+- ✅ Mark as Completed confirmed.
+- ✅ Offline / airplane mode confirmed.
+- ✅ App restart persistence confirmed.
 
 ---
 
@@ -499,8 +509,9 @@ npm run build:apk
 ---
 
 User testing result:
-- **Confirmed 2026-05-08:** App navigation (Home/Settings tabs), audit workflow, and Settings screen reached and used during testing session.
-- Pending: Theme toggle (dark/system mode), dark mode persistence, dashboard search filter.
+- ✅ Navigation confirmed 2026-05-08.
+- ✅ Dark mode toggle and persistence confirmed.
+- ✅ Dashboard search confirmed.
 
 ---
 

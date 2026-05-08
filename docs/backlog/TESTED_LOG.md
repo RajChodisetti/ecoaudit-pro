@@ -8,28 +8,36 @@ Only move an item here after the user has tested the feature using the delivery 
 
 ---
 
-### EA-P1-007 through EA-P1-015 — Audit Workflow, Equipment Capture, and PDF Reports (partial acceptance)
+### EA-P1-005 through EA-P1-017 — Full Phase 1 Feature Set
 
-Status: Partially accepted — 2026-05-08
-Accepted date: 2026-05-08 (partial)
+Status: Accepted (with two post-test bug fixes applied)
+Accepted date: 2026-05-08
 Phase: Phase 1
 Tested by: Product owner
 Build: 0.3.0, build 7
 
-Confirmed working in live testing session:
-- Deleted a zone photo — works
-- Deleted a zone — works
-- Deleted equipment items (all 3 types) — works
-- Generated audit PDF — works
-- Shared PDF with another device — works
+Confirmed working:
+- Mark audit as Completed — status badge changes, button disappears ✅
+- Form validation — save blocked on all required fields (all 3 equipment forms) ✅
+- Equipment edit — change value, save, reopen app, value persists ✅
+- App restart persistence — all equipment data survives force-close ✅
+- Dashboard search filter ✅
+- Dark mode toggle and persistence across restart ✅
+- Zone delete ✅
+- Equipment delete (all 3 types) ✅
+- Photo capture and photo delete ✅
+- PDF generate and share to another device ✅
+- Admin PIN gate (inspector prompted for PIN before User Management) ✅
+- Storage usage section visible in Settings ✅
+- Developer tools hidden for inspector role ✅
+- Offline / airplane mode — full capture and PDF generation works ✅
 
-Remaining items not yet verified (see DELIVERY_LOG for full checklist):
-- Form validation (save blocked on empty required fields)
-- HVAC Split/Packaged indoor unit section toggle
-- Mark audit as Completed
-- Equipment data persists after force-close + reopen
-- Dashboard search filter
-- Dark mode toggle
+Post-test bugs found and fixed (same session):
+- **Storage photos showing 0**: Storage walk was scanning `zone_photos/` but photos
+  are stored under `ecoaudit/zones/{zoneId}/`. Fixed to scan `ecoaudit/` directory.
+- **HVAC type toggle not felt**: Indoor unit section appeared/disappeared with no
+  animation. Added `LayoutAnimation.easeInEaseOut` so the section smoothly slides
+  in when Split is selected and out when Packaged is selected or deselected.
 
 ---
 

@@ -8,9 +8,83 @@ When the user accepts an item, move the whole entry to [TESTED_LOG.md](TESTED_LO
 
 ---
 
+### EA-P1-015 + EA-P1-016 + EA-P1-017 — PDF Reports, Admin Panel, Storage, Phase 1 RC
+
+Status: Partially tested — 2026-05-08
+Delivered date: 2026-05-08
+Phase: Phase 1
+Developer: Claude Code
+Branch or commit: main (commit a19a26c, 30bb94d)
+Version: 0.3.0, build 7
+
+---
+
+#### What was added
+
+**EA-P1-015 — MVP Offline PDF Save and Share:**
+- `expo-print` + `expo-sharing` installed
+- `src/pdf/generateAuditPdf.ts` — builds an HTML audit report:
+  - Site meta grid (name, address, inspector, date)
+  - Summary stat pills (zones, switchboards, HVAC, lighting counts)
+  - Per-zone blocks with all equipment items
+  - All photos per item embedded as base64 thumbnails with labels (matching web app):
+    - Switchboard: main photo + extra photos
+    - HVAC: unit photo, nameplate, controller, indoor unit nameplate, extra photos
+    - Lighting: fixture, fixtures installed, mounting/access, switches/sensors, switchboard, extra photos
+    - Zone: all zone photos
+  - Amber "Observations for Energy Improvement" and green "Additional Notes" callout boxes
+- Share button (top-right of Audit Review screen) → builds PDF → Android share sheet
+- PDF saved to `documentDirectory` as `audit_report_{id}.pdf`
+
+**EA-P1-016 — Settings, Admin, Storage:**
+- `SettingsScreen.tsx`:
+  - Storage section: async directory walk, shows Photos and PDF Reports sizes (KB/MB)
+  - Administration section: User Management row + Sync (coming soon, greyed out)
+  - Developer tools (DB Diagnostics, Scaffold) now **hidden for inspector role**
+- `AdminScreen.tsx`: list all users, add inspector/admin via bottom-sheet modal, deactivate/reactivate with confirmation
+- Admin PIN gate: non-admin tapping User Management is prompted for admin PIN before entering
+- `authRepository.ts`: `verifyAdminPin()` added
+
+**EA-P1-017 — Phase 1 Release Candidate:**
+- Version bumped to 0.3.0 build 7
+- `PHASE_LABEL` = "Phase 1 Complete · Increments 001–017"
+
+---
+
+#### How to test (remaining items)
+
+**EA-P1-015 (PDF — partially tested):**
+1. ✅ Open an audit with zones + equipment → Audit Review → tap share button → PDF generates → share sheet opens — **CONFIRMED 2026-05-08**
+2. Verify PDF content: all equipment types appear, photos are embedded with labels, site name/inspector/date are correct
+3. Share to a recipient — verify the PDF opens correctly on their device
+4. Re-generate PDF for same audit — verify it overwrites cleanly, no error
+
+**EA-P1-016 (Admin/Settings — not yet tested):**
+5. Settings → Storage section → should show KB/MB values for Photos and PDF Reports
+6. Settings → User Management → tap → add a new inspector (name, username, password) → confirm they appear in the list
+7. Tap Deactivate on the new inspector → confirm → status shows Inactive
+8. Log out, try to log in as the deactivated inspector → expected: "This account has been deactivated" error
+9. Log back in as admin, reactivate inspector
+10. Log out, log in as the inspector account → Settings → User Management → expected: Admin PIN prompt appears
+11. Enter correct admin PIN → expected: enters User Management
+12. Enter wrong PIN → expected: "Incorrect PIN" error, field clears
+
+**EA-P1-017 (RC cleanup — not yet tested):**
+13. Log in as admin → Settings → should see Database Diagnostics and Scaffold Info
+14. Log in as inspector → Settings → Database Diagnostics and Scaffold Info should NOT appear
+
+---
+
+User testing result:
+- EA-P1-015: PDF generation and sharing confirmed working 2026-05-08. Content review and re-generate pending.
+- EA-P1-016: Not yet tested
+- EA-P1-017: Not yet tested
+
+---
+
 ### EA-P1-010 + EA-P1-011 + EA-P1-012 + EA-P1-013 + EA-P1-014 — Equipment Framework, 3 Capture Forms, and Audit Review
 
-Status: Ready for user testing
+Status: Partially tested — 2026-05-08
 Delivered date: 2026-05-08
 Phase: Phase 1
 Developer: Claude Code
@@ -126,9 +200,15 @@ Version: 0.2.0, build 6
 
 ---
 
+User testing result:
+- **Confirmed 2026-05-08:** Equipment add and delete confirmed for all 3 types. Audit Review screen accessible and working.
+- Pending: Form validation on empty required fields, HVAC Split/Packaged indoor section toggle, equipment data persistence across force-close, phase 2 rows locked.
+
+---
+
 ### EA-P1-007 + EA-P1-008 + EA-P1-009 — Audit Form, Zone Management, and Photo Capture
 
-Status: Ready for user testing
+Status: Partially tested — 2026-05-08
 Delivered date: 2026-05-08
 Phase: Phase 1
 Developer: Claude Code
@@ -303,7 +383,8 @@ npm run build:apk
 ---
 
 User testing result:
-- Pending
+- **Confirmed 2026-05-08:** Zone delete confirmed. Photo capture (camera + library), photo delete confirmed. App navigation through audit → zones → workspace working.
+- Pending: Audit create validation, Mark as Completed flow, photo persistence across force-close, airplane mode operation.
 
 ---
 
@@ -418,7 +499,8 @@ npm run build:apk
 ---
 
 User testing result:
-- Pending
+- **Confirmed 2026-05-08:** App navigation (Home/Settings tabs), audit workflow, and Settings screen reached and used during testing session.
+- Pending: Theme toggle (dark/system mode), dark mode persistence, dashboard search filter.
 
 ---
 
@@ -564,7 +646,7 @@ Install the APK fresh (clear data or uninstall previous) on an Android phone, th
 ---
 
 User testing result:
-- Pending
+- **Confirmed 2026-05-08:** Login, session restore, logout, and biometric login confirmed working in earlier testing session (2026-05-07). Admin PIN UI now delivered in EA-P1-016. See TESTED_LOG.md for full acceptance record.
 
 ---
 

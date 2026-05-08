@@ -8,6 +8,31 @@ Only move an item here after the user has tested the feature using the delivery 
 
 ---
 
+### EA-P1-007 through EA-P1-015 — Audit Workflow, Equipment Capture, and PDF Reports (partial acceptance)
+
+Status: Partially accepted — 2026-05-08
+Accepted date: 2026-05-08 (partial)
+Phase: Phase 1
+Tested by: Product owner
+Build: 0.3.0, build 7
+
+Confirmed working in live testing session:
+- Deleted a zone photo — works
+- Deleted a zone — works
+- Deleted equipment items (all 3 types) — works
+- Generated audit PDF — works
+- Shared PDF with another device — works
+
+Remaining items not yet verified (see DELIVERY_LOG for full checklist):
+- Form validation (save blocked on empty required fields)
+- HVAC Split/Packaged indoor unit section toggle
+- Mark audit as Completed
+- Equipment data persists after force-close + reopen
+- Dashboard search filter
+- Dark mode toggle
+
+---
+
 ### EA-P1-001 + EA-P1-002 — Scaffold APK & Local Database with Diagnostics
 
 Status: User tested and accepted

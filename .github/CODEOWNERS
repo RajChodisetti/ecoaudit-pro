@@ -1,0 +1,10 @@
+# No owner is inferred from commit history.
+# A repository administrator must replace the examples below with valid users
+# or teams, then make CODEOWNERS review required on the canonical remote.
+#
+# *                         @organization/repository-owners
+# /AGENTS.md                @organization/ai-readiness-owners
+# /.ai/                     @organization/ai-readiness-owners
+# /docs/ai/                 @organization/ai-readiness-owners
+# /SECURITY.md              @organization/security-owners
+# /base44/functions/        @organization/security-owners

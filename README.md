@@ -10,34 +10,22 @@ EcoAudit Pro is an offline-first mobile app for commercial energy audits. Field 
 | **Web** | React web dashboard — audit management and reporting |
 | **API Server** | Shared Fastify API at [sustainability-wise-api](https://github.com/RajChodisetti/sustainability-wise-api) |
 
-## Mobile — Quick Start
+## Mobile workspace
 
-**Prerequisites:** Node.js 18+, Android Studio (for Android builds), Expo CLI
-
-```bash
-cd mobile
-npm install
-```
-
-Create `mobile/.env` with:
-```
-EXPO_PUBLIC_SYNC_API_URL=https://your-api-server.com
-```
-
-**Run on device/emulator:**
-```bash
-npx expo run:android
-```
-
-**Build APK (internal release):**
-```bash
-eas build --platform android --profile preview --local
-```
+`mobile/` is a separate pinned Git repository. Verify its recorded and checked-out revisions, then
+follow that repository's current instructions and lockfile. Native/device commands, environment
+configuration, dependency installation, signing, and EAS builds require explicit scope; the older
+Node 18 and generic build recipe formerly shown here is not authoritative.
 
 ## Web — Quick Start
 
+Use Node `22.23.1` from `.nvmrc` and the committed npm lockfile.
+
 ```bash
-npm install
+npm ci
+npm run lint
+npm run typecheck
+npm run build
 ```
 
 Create `.env.local`:

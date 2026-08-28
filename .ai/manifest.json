@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "repository": {
+    "name": "ecoaudit-pro",
+    "sourceRevisionAtAudit": "7e1d574",
+    "risk": "high",
+    "currentMaturity": "level-0",
+    "targetMaturity": "level-5-federated-and-governed",
+    "nextMilestone": "level-2-structured-ready"
+  },
+  "owners": {
+    "aiReadiness": null,
+    "security": null,
+    "domain": null
+  },
+  "workspaces": [
+    {
+      "id": "web",
+      "path": ".",
+      "kind": "react-vite-base44",
+      "entryPoints": ["src/main.jsx", "src/App.jsx"]
+    },
+    {
+      "id": "base44",
+      "path": "base44",
+      "kind": "schemas-and-serverless-functions",
+      "entryPoints": ["base44/config.jsonc", "base44/functions/sendAuditCompletedEmail/entry.ts"]
+    },
+    {
+      "id": "mobile",
+      "path": "mobile",
+      "kind": "git-submodule",
+      "externalRepository": "RajChodisetti/ecoaudit-pro-mobile",
+      "entryPoints": [],
+      "selectionPolicy": "Resolve the recorded-versus-checked-out revision and read the mobile repository's own manifest before selecting entry points."
+    }
+  ],
+  "canonicalCommands": {
+    "setup": "npm ci",
+    "dev": "npm run dev",
+    "lint": "npm run lint",
+    "typecheck": "npm run typecheck",
+    "build": "npm run build",
+    "test": null
+  },
+  "instructions": ["AGENTS.md"],
+  "documentationIndex": "docs/ai/INDEX.md",
+  "pathPolicy": "docs/ai/PATH_POLICY.md",
+  "knownBlockers": [
+    "Human owners are not assigned.",
+    "No web product-test command exists.",
+    "Critical and high dependency advisories remain unresolved.",
+    "Mobile and API documentation contains stale architecture claims.",
+    "Service-role authorization boundaries require review.",
+    "The mobile submodule checkout differed from the recorded gitlink at audit time.",
+    "CI and branch controls have not yet been proven on the canonical remote."
+  ]
+}

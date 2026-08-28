@@ -3,7 +3,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { ArrowLeft, Download, Loader2, Settings2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Settings2 } from 'lucide-react';
 import moment from 'moment';
 import DownloadOptionsDialog from '../components/report/DownloadOptionsDialog';
 import ReportHeader from '../components/report/ReportHeader';

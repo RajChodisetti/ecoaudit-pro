@@ -1,5 +1,3 @@
-import { SectionTitle } from '../../pages/ClientReport';
-
 export default function ReportObservations({ extraNotes = {} }) {
   // Collect all observation fields that have content
   const observations = [

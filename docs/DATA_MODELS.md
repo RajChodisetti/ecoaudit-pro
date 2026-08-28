@@ -11,14 +11,34 @@ Top-level entity. One audit per site visit.
 | Field | Type | Notes |
 |---|---|---|
 | `id` | string | Auto-generated |
+| `client_name` | string | Display name; normalized by the unified API for matching |
+| `unified_client_id` | string | Server-issued client-directory link |
+| `unified_site_id` | string | Server-issued saved-site link |
 | `site_name` * | string | |
-| `site_address` * | string | |
+| `site_address` * | string | Display address as selected or manually entered |
+| `site_locality` | string | Australian suburb/locality |
+| `site_state` | string | Australian state/territory abbreviation |
+| `site_postcode` | string | Four digits when supplied |
+| `site_country_code` | string | Always `AU` |
+| `site_latitude` | number | Populated when geocoding evidence is available |
+| `site_longitude` | number | Populated when geocoding evidence is available |
+| `site_geocode_provider` | string | `geoapify` or `photon` |
+| `site_geocode_place_id` | string | Provider-issued place identifier |
+| `site_address_source` | string | `suggested` \| `manual` \| `client_saved` |
+| `site_geocode_status` | string | `unresolved` \| `resolved` \| `manual` \| `failed` |
+| `site_address_fingerprint` | string | Unified API's opaque 64-hex address identity |
+| `site_geocoded_at` | datetime | Canonical geocoding evidence timestamp |
 | `inspector_name` * | string | |
 | `audit_date` | date | Defaults to today |
 | `status` | string | `Draft` \| `Completed` |
 | `created_date` | datetime | Auto |
 | `updated_date` | datetime | Auto |
 | `created_by` | string | Auto (user ID) |
+
+The client/address fields are additive so historical Audit rows remain valid.
+A manual address never requires a provider selection. When a user edits a
+previously selected address, stale coordinates, provider data, fingerprint and
+saved-site identity are cleared before the next sync.
 
 ---
 

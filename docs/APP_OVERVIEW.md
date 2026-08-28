@@ -12,7 +12,8 @@
 
 EcoAudit Pro is a mobile-first web application that guides energy auditors through a structured audit workflow:
 
-1. **Create an Audit** — Record site name, address, inspector name, and date
+1. **Create an Audit** — Select or enter a client, reuse or enter an Australian
+   site address, and record inspector and date
 2. **Define Zones** — Divide the site into logical areas (e.g., warehouse, office, rooftop)
 3. **Capture Equipment** — Within each zone, log 9 types of energy equipment with photos and technical specs
 4. **Review Data** — See audit data organized by zone or equipment type
@@ -44,7 +45,11 @@ Dashboard
 - Sort by creation date (newest first)
 
 ### Site Audit (`/audit/:id`)
-- Create or edit audit metadata (site name, address, inspector, date)
+- Suggest known clients, then show their saved sites
+- Show saved-site and Australian provider suggestions in one address input
+- Auto-fill editable site/address fields, or retain a valid manual address
+- Create or edit audit metadata (client, site, address, inspector, date)
+- Project client/site/job memory through an authenticated Base44 server function
 - Manage zones: add, delete, view
 - Mark audit as "Completed" (triggers email notification to internal team)
 
@@ -94,7 +99,7 @@ All data lives in the Base44 cloud database. Every entity carries `zone_id` and 
 
 | Entity | Key Fields |
 |---|---|
-| **Audit** | site_name, site_address, inspector_name, audit_date, status (Draft/Completed) |
+| **Audit** | client/site directory links, Australian address contract, inspector_name, audit_date, status (Draft/Completed) |
 | **Zone** | audit_id, zone_name, zone_description, photos[] |
 | **MainSwitchboard** | name, location, map_locator, site_nmi, sub_circuits_description, photo, extra_photos[] |
 | **AdditionalSwitchboard** | name, location, type (MSSB/PVDB/DSB-W/DSB-S), sub_circuits_description, photo, extra_photos[] |

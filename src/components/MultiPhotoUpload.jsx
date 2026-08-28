@@ -86,7 +86,7 @@ export default function MultiPhotoUpload({ value = [], onChange, label = "Photos
 
       {cameraOpen && (
         <div className="fixed inset-0 z-50 bg-black flex flex-col">
-          <video ref={setVideoRef} autoPlay playsInline muted webkit-playsinline="true" className="flex-1 w-full object-cover" />
+          <video ref={setVideoRef} autoPlay playsInline muted className="flex-1 w-full object-cover" />
           <div className="flex items-center justify-around p-6 bg-black">
             <button type="button" onClick={closeCamera} className="text-white text-sm px-5 py-3">Cancel</button>
             <button type="button" onClick={capturePhoto} className="w-16 h-16 rounded-full bg-white border-4 border-gray-300 flex items-center justify-center">

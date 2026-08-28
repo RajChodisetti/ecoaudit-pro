@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import MultiPhotoUpload from '../components/MultiPhotoUpload';
 import { toast } from 'sonner';
 import EquipmentGrid from '../components/EquipmentGrid';

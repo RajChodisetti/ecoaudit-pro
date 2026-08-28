@@ -21,6 +21,9 @@ When sources disagree, report the conflict; do not silently choose one.
 - Web routes and page composition: `src/App.jsx`, then the referenced page.
 - Base44 data shapes: `base44/entities/`.
 - Serverless email behavior: `base44/functions/`.
+- Client/address memory UI and Base44-to-unified-API trust boundary:
+  `docs/BASE44_UNIFIED_API_INTEGRATION.md`, then
+  `base44/functions/ecoAuditClientSiteMemory/entry.ts`.
 - Web product workflow: `docs/APP_OVERVIEW.md` plus implementation evidence.
 - Mobile implementation: the pinned `mobile/` repository, after verifying its
   gitlink and working-tree state.
@@ -35,6 +38,8 @@ When sources disagree, report the conflict; do not silently choose one.
   contract.
 - `docs/API_CAPABILITIES.md`: stale for the wider ecosystem; it predates the
   shared API used by mobile. Do not treat its “no API” statement as current.
+- `docs/BASE44_UNIFIED_API_INTEGRATION.md`: current contract and deployment
+  prerequisites for standalone Base44 client/address memory.
 - `docs/MOBILE_ARCHITECTURE.md`: historical proposal, not current production
   architecture. Its Supabase/Next.js plan conflicts with the implemented shared
   Fastify API and current mobile dependencies.

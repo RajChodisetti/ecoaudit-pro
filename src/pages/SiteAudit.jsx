@@ -10,6 +10,9 @@ import { ArrowLeft, Plus, Save, Loader2, CheckCircle, FileText, Trash2 } from 'l
 import { toast } from 'sonner';
 import ZoneCard from '../components/ZoneCard';
 import PullToRefresh from '../components/PullToRefresh';
+import ClientAddressFields from '../components/ClientAddressFields';
+import { clientSiteMemoryError, syncAuditClientSiteMemory } from '@/api/clientSiteMemory';
+import { mergeCanonicalSync, normalizeLoadedAudit } from '@/lib/clientAddressMemory';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 export default function SiteAudit() {
@@ -17,13 +20,14 @@ export default function SiteAudit() {
   const navigate = useNavigate();
   const isNew = auditId === 'new';
 
-  const [audit, setAudit] = useState({
-    site_name: '', site_address: '', inspector_name: '',
+  const [audit, setAudit] = useState(() => normalizeLoadedAudit({
+    client_name: '', site_name: '', site_address: '', inspector_name: '',
     audit_date: new Date().toISOString().split('T')[0], status: 'Draft',
-  });
+  }));
   const [zones, setZones] = useState([]);
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [completing, setCompleting] = useState(false);
   const [zoneDialog, setZoneDialog] = useState(false);
   const [newZone, setNewZone] = useState({ zone_name: '', zone_description: '' });
   const [deleteAuditDialog, setDeleteAuditDialog] = useState(false);
@@ -38,7 +42,7 @@ export default function SiteAudit() {
         base44.entities.Audit.filter({ id: auditId }),
         base44.entities.Zone.filter({ audit_id: auditId }),
       ]);
-      if (auditData.length) setAudit(auditData[0]);
+      if (auditData.length) setAudit(normalizeLoadedAudit(auditData[0]));
       setZones(zonesData);
     } catch (e) {
       toast.error('Failed to load audit data. Please try again.');
@@ -48,27 +52,72 @@ export default function SiteAudit() {
   };
 
   const handleSave = async () => {
-    if (!audit.site_name || !audit.site_address || !audit.inspector_name) {
+    if (!audit.client_name?.trim() || !audit.site_name?.trim() || !audit.site_address?.trim() || !audit.inspector_name?.trim()) {
       toast.error('Please fill all required fields');
       return;
     }
-    setSaving(true);
-    if (isNew) {
-      const created = await base44.entities.Audit.create(audit);
-      toast.success('Audit created');
-      navigate(`/audit/${created.id}`, { replace: true });
-    } else {
-      const { id, created_date, updated_date, created_by, ...updateData } = audit;
-      await base44.entities.Audit.update(auditId, updateData);
-      toast.success('Audit saved');
+    if (audit.site_postcode && !/^\d{4}$/.test(audit.site_postcode)) {
+      toast.error('Australian postcodes must contain four digits');
+      return;
     }
-    setSaving(false);
+    setSaving(true);
+    try {
+      let savedAuditId = auditId;
+      if (isNew) {
+        const created = await base44.entities.Audit.create(audit);
+        savedAuditId = created.id;
+        setAudit(normalizeLoadedAudit(created));
+      } else {
+        const { id, created_date, updated_date, created_by, ...updateData } = audit;
+        await base44.entities.Audit.update(auditId, updateData);
+      }
+
+      try {
+        const synced = await syncAuditClientSiteMemory(savedAuditId);
+        setAudit((current) => mergeCanonicalSync(current, synced?.audit));
+        toast.success(isNew ? 'Audit created and backed up' : 'Audit saved and backed up');
+      } catch (syncError) {
+        toast.warning(
+          `${isNew ? 'Audit created' : 'Audit saved'}, but client/address backup needs a retry. ${clientSiteMemoryError(syncError, '')}`.trim(),
+        );
+      }
+
+      if (isNew) navigate(`/audit/${savedAuditId}`, { replace: true });
+    } catch (error) {
+      toast.error('Failed to save the audit. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleComplete = async () => {
-    await base44.entities.Audit.update(auditId, { status: 'Completed' });
-    setAudit({ ...audit, status: 'Completed' });
-    toast.success('Audit marked as completed');
+    if (!audit.client_name?.trim() || !audit.site_name?.trim() || !audit.site_address?.trim() || !audit.inspector_name?.trim()) {
+      toast.error('Please fill all required fields before completing the audit');
+      return;
+    }
+    if (audit.site_postcode && !/^\d{4}$/.test(audit.site_postcode)) {
+      toast.error('Australian postcodes must contain four digits');
+      return;
+    }
+    setCompleting(true);
+    try {
+      const { id, created_date, updated_date, created_by, ...updateData } = audit;
+      await base44.entities.Audit.update(auditId, { ...updateData, status: 'Completed' });
+      setAudit((current) => ({ ...current, status: 'Completed' }));
+      try {
+        const synced = await syncAuditClientSiteMemory(auditId);
+        setAudit((current) => mergeCanonicalSync(current, synced?.audit));
+        toast.success('Audit marked as completed and backed up');
+      } catch (syncError) {
+        toast.warning(
+          `Audit marked as completed, but client/address backup needs a retry. ${clientSiteMemoryError(syncError, '')}`.trim(),
+        );
+      }
+    } catch (error) {
+      toast.error('Failed to complete the audit. Please try again.');
+    } finally {
+      setCompleting(false);
+    }
   };
 
   const handleAddZone = async () => {
@@ -107,7 +156,7 @@ export default function SiteAudit() {
         base44.entities.Audit.filter({ id: auditId }),
         base44.entities.Zone.filter({ audit_id: auditId }),
       ]);
-      if (auditData.length) setAudit(auditData[0]);
+      if (auditData.length) setAudit(normalizeLoadedAudit(auditData[0]));
       setZones(zonesData);
     } catch (e) {
       toast.error('Refresh failed. Please try again.');
@@ -154,14 +203,7 @@ export default function SiteAudit() {
       <div className="bg-card rounded-xl border border-border p-5 space-y-4">
         <h2 className="text-lg font-semibold text-foreground">Site Details</h2>
         <div className="space-y-3">
-          <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Site Name *</label>
-            <Input value={audit.site_name} onChange={e => set('site_name', e.target.value)} />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Site Address *</label>
-            <Input value={audit.site_address} onChange={e => set('site_address', e.target.value)} />
-          </div>
+          <ClientAddressFields audit={audit} onChange={setAudit} />
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-sm font-medium text-foreground mb-1.5 block">Inspector *</label>
@@ -174,13 +216,15 @@ export default function SiteAudit() {
           </div>
         </div>
         <div className="flex gap-2 pt-2">
-          <Button onClick={handleSave} disabled={saving} className="flex-1">
+          <Button onClick={handleSave} disabled={saving || completing} className="flex-1">
             {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             {isNew ? 'Create Audit' : 'Save Changes'}
           </Button>
           {!isNew && audit.status === 'Draft' && (
-            <Button variant="outline" onClick={handleComplete}>
-              <CheckCircle className="w-4 h-4 mr-2" />
+            <Button variant="outline" onClick={handleComplete} disabled={saving || completing}>
+              {completing
+                ? <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                : <CheckCircle className="w-4 h-4 mr-2" />}
               Complete
             </Button>
           )}

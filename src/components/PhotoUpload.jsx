@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Camera, ImagePlus, X, Loader2, FlipHorizontal } from 'lucide-react';
+import { Camera, ImagePlus, X, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function PhotoUpload({ value, onChange, label = "Photo" }) {
@@ -79,7 +79,7 @@ export default function PhotoUpload({ value, onChange, label = "Photo" }) {
       {/* Camera viewfinder */}
       {cameraOpen && (
         <div className="fixed inset-0 z-50 bg-black flex flex-col">
-          <video ref={setVideoRef} autoPlay playsInline muted webkit-playsinline="true" className="flex-1 w-full object-cover" />
+          <video ref={setVideoRef} autoPlay playsInline muted className="flex-1 w-full object-cover" />
           <div className="flex items-center justify-around p-6 bg-black">
             <button type="button" onClick={closeCamera} className="text-white text-sm px-5 py-3">Cancel</button>
             <button

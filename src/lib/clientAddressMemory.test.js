@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import {
   applyAddressSuggestion,
@@ -131,4 +132,19 @@ test('site edits are allowed and Add a new address resets only site details', ()
   assert.equal(fresh.site_name, '');
   assert.equal(fresh.site_address, '');
   assert.equal(fresh.site_country_code, 'AU');
+});
+
+test('Add a new address invalidates and clears delayed suggestion results', () => {
+  const component = readFileSync(
+    new URL('../components/ClientAddressFields.jsx', import.meta.url),
+    'utf8',
+  );
+  assert.match(
+    component,
+    /const requestId = \+\+addressRequest\.current;\s+if \(!addressOpen\)/,
+  );
+  assert.match(
+    component,
+    /const useNewAddress = \(\) => \{\s+addressRequest\.current \+= 1;\s+setAddresses\(\[\]\);\s+setAttribution\(null\);\s+setAddressLoading\(false\);/,
+  );
 });

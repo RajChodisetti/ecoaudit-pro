@@ -61,14 +61,20 @@ export default function ClientAddressFields({ audit, onChange }) {
   }, [audit.client_name, clientOpen]);
 
   useEffect(() => {
-    if (!addressOpen) return undefined;
+    const requestId = ++addressRequest.current;
+    if (!addressOpen) {
+      setAddresses([]);
+      setAttribution(null);
+      setAddressLoading(false);
+      return undefined;
+    }
     const query = (audit.site_address || '').trim();
     if (!audit.unified_client_id && query.length < 3) {
       setAddresses([]);
       setAttribution(null);
+      setAddressLoading(false);
       return undefined;
     }
-    const requestId = ++addressRequest.current;
     const timer = window.setTimeout(async () => {
       setAddressLoading(true);
       try {
@@ -113,6 +119,10 @@ export default function ClientAddressFields({ audit, onChange }) {
   };
 
   const useNewAddress = () => {
+    addressRequest.current += 1;
+    setAddresses([]);
+    setAttribution(null);
+    setAddressLoading(false);
     onChange((current) => beginNewAddress(current));
     setAddressOpen(false);
     window.requestAnimationFrame(() => addressInput.current?.focus());
